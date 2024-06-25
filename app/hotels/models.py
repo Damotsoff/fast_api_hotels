@@ -1,12 +1,12 @@
-from sqlalchemy import JSON, Column, Integer, String
+from sqlalchemy import JSON, Integer
 from sqlalchemy.orm import Mapped, mapped_column
 from app.database import Base
-from typing import Optional
 
 
 class Hotels(Base):
     __tablename__ = "hotels"
-    id: Mapped[int] = mapped_column(primary_key=True)
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
     name: Mapped[str]
     location: Mapped[str]
     services: Mapped[list[str]] = mapped_column(JSON)

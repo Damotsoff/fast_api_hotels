@@ -1,4 +1,4 @@
-from sqlalchemy import Computed, Date, ForeignKey, Integer, String, JSON, Column
+from sqlalchemy import Date, ForeignKey, Computed
 from sqlalchemy.orm import Mapped, mapped_column
 from app.database import Base
 from datetime import date
@@ -6,6 +6,7 @@ from datetime import date
 
 class Bookings(Base):
     __tablename__ = "bookings"
+
     id: Mapped[int] = mapped_column(primary_key=True)
     room_id: Mapped[int] = mapped_column(ForeignKey("rooms.id"))
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id"))

@@ -1,24 +1,36 @@
 from fastapi import FastAPI, Query, Depends
 from typing import Optional
-from datetime import date
 from pydantic import BaseModel
-from app.bookings.router import router as router_bookings
 from app.users.router import router as router_users
+from app.bookings.router import router as router_bookings
+
 
 app = FastAPI()
 app.include_router(router_users)
 app.include_router(router_bookings)
 
 
+class SBooking(BaseModel):
+    room_id: int
+    date_from: str
+    date_to: str
+
+
+class SHotel(BaseModel):
+    addres: str
+    name: str
+    stars: int
+
+
 class HotelsSearchArgs:
     def __init__(
         self,
         location: str,
-        date_from: date,
-        date_to: date,
+        date_from: str,
+        date_to: str,
         has_spa: Optional[bool] = None,
         stars: Optional[int] = Query(None, ge=1, le=5),
-    ):
+    ) -> None:
         self.location = location
         self.date_from = date_from
         self.date_to = date_to
@@ -26,27 +38,11 @@ class HotelsSearchArgs:
         self.stars = stars
 
 
-class SHotel(BaseModel):
-    name: str
-    adress: str
-    stars: int
+@app.get("/hotels")
+async def get_hotels(search_args: HotelsSearchArgs = Depends()):
+    return search_args
 
 
-@app.get("/hotels", response_model=list[SHotel])
-def get_hotels(search_args: HotelsSearchArgs = Depends()):
-    hotels = [
-        {"name": "Antalia", "adress": "Green St. 23", "stars": 2},
-        {"name": "Guakamole", "adress": "Schlossstraße 133", "stars": 2},
-    ]
-    return hotels
-
-
-class SBooking(BaseModel):
-    hotel_id: int
-    date_from: date
-    date_to: date
-
-
-@app.post("/bookings")
-def booking(booking: SBooking):
-    pass
+@app.post("/booking")
+async def booking(booking: SBooking):
+    return booking
